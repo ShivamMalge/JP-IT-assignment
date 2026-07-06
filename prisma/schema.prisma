@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Post {
+  id           String           @id @default(uuid())
+  urn          String           @unique
+  rawText      String
+  authorName   String?
+  postUrl      String
+  postedAt     DateTime
+  createdAt    DateTime         @default(now())
+  applications JobApplication[]
+}
+
+model JobApplication {
+  id             String    @id @default(uuid())
+  postId         String
+  jobTitle       String?
+  company        String?
+  recruiterEmail String?
+  status         String    @default("PENDING")
+  sentAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  post Post @relation(fields: [postId], references: [id])
+}
+
+model Log {
+  id        String   @id @default(uuid())
+  level     String
+  message   String
+  timestamp DateTime @default(now())
+}
